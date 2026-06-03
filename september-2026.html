@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сентябрь 2026 — Календарь A3</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Dancing+Script:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1190px;
+    height: 842px;
+    background: #faf8f5;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ===== FLOWER SVG OVERLAYS ===== */
+  .flowers-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1190px;
+    height: 842px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  .page {
+    position: relative;
+    width: 1190px;
+    height: 842px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 10px 6px 10px;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 62px;
+    position: relative;
+    z-index: 5;
+  }
+
+  .title-year {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 42px;
+    color: #c0392b;
+    letter-spacing: 2px;
+    margin-right: 16px;
+  }
+
+  .title-month {
+    font-family: 'Dancing Script', cursive;
+    font-weight: 700;
+    font-size: 48px;
+    color: #1a1a1a;
+    letter-spacing: 1px;
+  }
+
+  /* ===== BODY ROW ===== */
+  .body-row {
+    display: flex;
+    flex: 1;
+    gap: 0;
+    min-height: 0;
+  }
+
+  /* ===== LEFT DECORATION SPACE ===== */
+  .left-deco {
+    width: 48px;
+    flex-shrink: 0;
+  }
+
+  /* ===== MAIN CALENDAR AREA ===== */
+  .calendar-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* ===== DAY HEADERS ===== */
+  .day-headers {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-top: 2px solid #2c2c2c;
+    border-left: 2px solid #2c2c2c;
+  }
+
+  .day-header {
+    border-right: 1px solid #2c2c2c;
+    border-bottom: 1px solid #aaa;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 3px 2px;
+    color: #2c2c2c;
+  }
+
+  .day-header.weekend {
+    color: #c0392b;
+  }
+
+  /* ===== CALENDAR GRID ===== */
+  .calendar-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    border-left: 2px solid #2c2c2c;
+    border-bottom: 2px solid #2c2c2c;
+    min-height: 0;
+  }
+
+  .day-cell {
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    position: relative;
+    padding: 3px 4px 2px 4px;
+    background: #fefefe;
+    min-height: 0;
+  }
+
+  .day-cell:nth-child(6n+6),
+  .day-cell:nth-child(6n+0) {
+    background: #fff8f8;
+  }
+
+  .day-cell.empty {
+    background: #f5f5f5;
+  }
+
+  .day-cell .date-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1;
+  }
+
+  .day-cell.weekend-day .date-num {
+    color: #c0392b;
+  }
+
+  .day-cell .doy {
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    font-size: 7.5px;
+    color: #999;
+    line-height: 1.2;
+    text-align: right;
+  }
+
+  .moon-icon {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    font-size: 13px;
+    opacity: 0.8;
+  }
+
+  /* ===== RIGHT SIDEBAR ===== */
+  .right-sidebar {
+    width: 148px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-left: 6px;
+    padding-right: 2px;
+  }
+
+  /* ===== MINI CALENDAR ===== */
+  .mini-cal {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .mini-cal-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    color: #1a1a1a;
+    margin-bottom: 3px;
+  }
+
+  .mini-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+  }
+
+  .mini-cal-grid .mch {
+    font-size: 6.5px;
+    font-weight: 700;
+    text-align: center;
+    color: #555;
+    padding: 1px 0;
+  }
+
+  .mini-cal-grid .mch.wknd { color: #c0392b; }
+
+  .mini-cal-grid .mcd {
+    font-size: 7.5px;
+    text-align: center;
+    color: #333;
+    padding: 1px 0;
+    border-radius: 2px;
+  }
+
+  .mini-cal-grid .mcd.wknd { color: #c0392b; }
+  .mini-cal-grid .mcd.empty { color: transparent; }
+
+  /* ===== NOTES SECTION ===== */
+  .notes-section {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 6px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .notes-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #2c2c2c;
+    margin-bottom: 4px;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .notes-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .notes-line {
+    border-bottom: 1px solid #e0d8d0;
+    height: 14px;
+  }
+
+  /* ===== HABITS TRACKER ===== */
+  .habits-section {
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #2c2c2c;
+    border-top: 2px solid #2c2c2c;
+    margin-top: 4px;
+  }
+
+  .habits-header-row {
+    display: flex;
+    border-bottom: 1px solid #bbb;
+    flex-shrink: 0;
+  }
+
+  .habits-label-cell {
+    width: 110px;
+    flex-shrink: 0;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #2c2c2c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #bbb;
+    padding: 2px 4px;
+    background: #f0ede8;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .habits-days-row {
+    display: flex;
+    flex: 1;
+  }
+
+  .habit-day-cell {
+    flex: 1;
+    border-right: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 7px;
+    font-weight: 700;
+    color: #555;
+  }
+
+  .habit-day-cell.wknd-h { color: #c0392b; background: #fff5f5; }
+  .habit-day-cell:last-child { border-right: none; }
+
+  .habit-row {
+    display: flex;
+    flex: 1;
+    border-top: 1px solid #ddd;
+  }
+
+  .habit-name-cell {
+    width: 110px;
+    flex-shrink: 0;
+    border-right: 1px solid #bbb;
+    background: #faf8f5;
+  }
+
+  .habit-cells-row {
+    display: flex;
+    flex: 1;
+  }
+
+  .habit-cell {
+    flex: 1;
+    border-right: 1px solid #eee;
+  }
+
+  .habit-cell:last-child { border-right: none; }
+  .habit-cell.wknd-c { background: #fff5f5; }
+
+  /* BOTTOM DECORATION SPACE */
+  .bottom-deco {
+    height: 44px;
+    flex-shrink: 0;
+  }
+
+  @media print {
+    body { width: 420mm; height: 297mm; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== FLOWER SVG OVERLAY ===== -->
+<svg class="flowers-overlay" viewBox="0 0 1190 842" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Petal gradient -->
+    <radialGradient id="petalGrad1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f5c2cb"/>
+      <stop offset="100%" stop-color="#e8a0b0"/>
+    </radialGradient>
+    <radialGradient id="petalGrad2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e8a0b0"/>
+      <stop offset="100%" stop-color="#d4607a"/>
+    </radialGradient>
+    <radialGradient id="centerGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe066"/>
+      <stop offset="100%" stop-color="#ffd700"/>
+    </radialGradient>
+    <radialGradient id="petalGrad3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fde8ee"/>
+      <stop offset="100%" stop-color="#f5c2cb"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ============================================================ -->
+  <!-- TOP FLORAL GARLAND — around the title                        -->
+  <!-- ============================================================ -->
+
+  <!-- LEFT side of title: big rose cluster -->
+  <!-- Rose 1 (left, large) -->
+  <g transform="translate(330, 38) rotate(-15)">
+    <ellipse cx="0" cy="-14" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9"/>
+    <ellipse cx="10" cy="-8" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9" transform="rotate(40)"/>
+    <ellipse cx="10" cy="8" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(100)"/>
+    <ellipse cx="0" cy="14" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(160)"/>
+    <ellipse cx="-10" cy="8" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9" transform="rotate(220)"/>
+    <ellipse cx="-10" cy="-8" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9" transform="rotate(280)"/>
+    <circle cx="0" cy="0" r="7" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="4" fill="#e8a030" opacity="0.7"/>
+  </g>
+
+  <!-- Rose 2 (left cluster, small) -->
+  <g transform="translate(305, 24) rotate(10)">
+    <ellipse cx="0" cy="-9" rx="6" ry="9" fill="#f5c2cb" opacity="0.9"/>
+    <ellipse cx="7" cy="-5" rx="6" ry="9" fill="#e8a0b0" opacity="0.85" transform="rotate(50)"/>
+    <ellipse cx="7" cy="5" rx="6" ry="9" fill="#d4607a" opacity="0.8" transform="rotate(110)"/>
+    <ellipse cx="0" cy="9" rx="6" ry="9" fill="#e8a0b0" opacity="0.85" transform="rotate(170)"/>
+    <ellipse cx="-7" cy="5" rx="6" ry="9" fill="#f5c2cb" opacity="0.9" transform="rotate(230)"/>
+    <ellipse cx="-7" cy="-5" rx="6" ry="9" fill="#e8a0b0" opacity="0.85" transform="rotate(290)"/>
+    <circle cx="0" cy="0" r="5" fill="url(#centerGrad)"/>
+  </g>
+
+  <!-- Rose bud (left) -->
+  <g transform="translate(356, 20) rotate(-5)">
+    <path d="M0,-12 C5,-8 5,0 0,8 C-5,0 -5,-8 0,-12 Z" fill="#d4607a" opacity="0.9"/>
+    <path d="M-4,-8 C0,-4 0,4 -4,8 C-7,2 -6,-4 -4,-8 Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M4,-8 C7,-4 7,2 4,8 C0,4 0,-4 4,-8 Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M-2,6 C-8,14 -6,20 0,22 C6,20 8,14 2,6 Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+
+  <!-- Leaves left cluster -->
+  <path d="M290,48 C295,30 310,25 320,32 C310,38 298,42 290,48 Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M280,52 C288,38 302,36 308,44 C298,46 286,50 280,52 Z" fill="#5a9e28" opacity="0.75"/>
+  <path d="M340,55 C348,42 360,40 365,50 C355,50 344,54 340,55 Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M358,14 C363,4 374,2 378,10 C368,12 360,14 358,14 Z" fill="#7ab648" opacity="0.7"/>
+
+  <!-- Small accent flowers left -->
+  <g transform="translate(312, 56)">
+    <circle cx="-5" cy="0" r="4" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="-5" r="4" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="5" cy="0" r="4" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="5" r="4" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="0" r="3.5" fill="#ffd700" opacity="0.9"/>
+  </g>
+
+  <!-- RIGHT side of title: big rose cluster -->
+  <!-- Rose 3 (right, large) -->
+  <g transform="translate(858, 36) rotate(12)">
+    <ellipse cx="0" cy="-14" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9"/>
+    <ellipse cx="10" cy="-8" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(40)"/>
+    <ellipse cx="10" cy="8" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9" transform="rotate(100)"/>
+    <ellipse cx="0" cy="14" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(160)"/>
+    <ellipse cx="-10" cy="8" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9" transform="rotate(220)"/>
+    <ellipse cx="-10" cy="-8" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(280)"/>
+    <circle cx="0" cy="0" r="7" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="4" fill="#e8a030" opacity="0.7"/>
+  </g>
+
+  <!-- Rose 4 (right cluster) -->
+  <g transform="translate(882, 22) rotate(-8)">
+    <ellipse cx="0" cy="-9" rx="6" ry="9" fill="#f5c2cb" opacity="0.9"/>
+    <ellipse cx="7" cy="-5" rx="6" ry="9" fill="#d4607a" opacity="0.8" transform="rotate(50)"/>
+    <ellipse cx="7" cy="5" rx="6" ry="9" fill="#e8a0b0" opacity="0.85" transform="rotate(110)"/>
+    <ellipse cx="0" cy="9" rx="6" ry="9" fill="#f5c2cb" opacity="0.9" transform="rotate(170)"/>
+    <ellipse cx="-7" cy="5" rx="6" ry="9" fill="#e8a0b0" opacity="0.85" transform="rotate(230)"/>
+    <ellipse cx="-7" cy="-5" rx="6" ry="9" fill="#d4607a" opacity="0.8" transform="rotate(290)"/>
+    <circle cx="0" cy="0" r="5" fill="url(#centerGrad)"/>
+  </g>
+
+  <!-- Rose bud right -->
+  <g transform="translate(838, 20) rotate(8)">
+    <path d="M0,-11 C5,-7 5,1 0,9 C-5,1 -5,-7 0,-11 Z" fill="#d4607a" opacity="0.9"/>
+    <path d="M-4,-7 C0,-3 0,4 -4,8 C-7,1 -6,-4 -4,-7 Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M4,-7 C7,-4 7,1 4,8 C0,4 0,-3 4,-7 Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M-2,7 C-8,15 -6,21 0,23 C6,21 8,15 2,7 Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+
+  <!-- Leaves right cluster -->
+  <path d="M900,48 C895,30 880,25 870,32 C880,38 892,42 900,48 Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M910,50 C902,36 888,34 882,42 C892,44 904,48 910,50 Z" fill="#5a9e28" opacity="0.75"/>
+  <path d="M840,52 C832,39 820,37 815,47 C825,47 836,51 840,52 Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M830,16 C825,6 814,4 810,12 C820,14 828,16 830,16 Z" fill="#7ab648" opacity="0.7"/>
+
+  <!-- Small accent flowers right -->
+  <g transform="translate(872, 56)">
+    <circle cx="-5" cy="0" r="4" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="-5" r="4" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="5" cy="0" r="4" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="5" r="4" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="0" r="3.5" fill="#ffd700" opacity="0.9"/>
+  </g>
+
+  <!-- Connecting stems/vines across top -->
+  <path d="M370,40 C410,20 440,15 480,25 C460,30 420,32 380,45" fill="none" stroke="#7ab648" stroke-width="1.5" opacity="0.6"/>
+  <path d="M820,40 C780,20 750,15 710,25 C730,30 768,32 808,45" fill="none" stroke="#7ab648" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Small flowers along top vines -->
+  <g transform="translate(430, 22)">
+    <circle cx="-4" cy="0" r="3.5" fill="#f5c2cb" opacity="0.85"/>
+    <circle cx="0" cy="-4" r="3.5" fill="#e8a0b0" opacity="0.85"/>
+    <circle cx="4" cy="0" r="3.5" fill="#f5c2cb" opacity="0.85"/>
+    <circle cx="0" cy="4" r="3.5" fill="#e8a0b0" opacity="0.85"/>
+    <circle cx="0" cy="0" r="3" fill="#ffd700" opacity="0.9"/>
+  </g>
+  <g transform="translate(760, 22)">
+    <circle cx="-4" cy="0" r="3.5" fill="#e8a0b0" opacity="0.85"/>
+    <circle cx="0" cy="-4" r="3.5" fill="#f5c2cb" opacity="0.85"/>
+    <circle cx="4" cy="0" r="3.5" fill="#e8a0b0" opacity="0.85"/>
+    <circle cx="0" cy="4" r="3.5" fill="#f5c2cb" opacity="0.85"/>
+    <circle cx="0" cy="0" r="3" fill="#ffd700" opacity="0.9"/>
+  </g>
+
+  <!-- Small scatter buds top -->
+  <g transform="translate(470, 30) rotate(20)">
+    <path d="M0,-7 C3,-4 3,2 0,6 C-3,2 -3,-4 0,-7Z" fill="#d4607a" opacity="0.8"/>
+    <path d="M-4,4 C-7,10 -5,14 0,16 C5,14 7,10 4,4Z" fill="#7ab648" opacity="0.75"/>
+  </g>
+  <g transform="translate(720, 30) rotate(-20)">
+    <path d="M0,-7 C3,-4 3,2 0,6 C-3,2 -3,-4 0,-7Z" fill="#d4607a" opacity="0.8"/>
+    <path d="M-4,4 C-7,10 -5,14 0,16 C5,14 7,10 4,4Z" fill="#7ab648" opacity="0.75"/>
+  </g>
+  <g transform="translate(510, 18) rotate(5)">
+    <path d="M0,-6 C3,-3 3,2 0,5 C-3,2 -3,-3 0,-6Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M-3,3 C-6,8 -4,12 0,13 C4,12 6,8 3,3Z" fill="#7ab648" opacity="0.75"/>
+  </g>
+  <g transform="translate(680, 18) rotate(-5)">
+    <path d="M0,-6 C3,-3 3,2 0,5 C-3,2 -3,-3 0,-6Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M-3,3 C-6,8 -4,12 0,13 C4,12 6,8 3,3Z" fill="#7ab648" opacity="0.75"/>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- LEFT VERTICAL STRIP                                          -->
+  <!-- ============================================================ -->
+  <!-- Vertical stem -->
+  <path d="M28,75 C22,160 35,260 25,370 C18,460 30,560 24,680 C20,740 26,790 30,800"
+        fill="none" stroke="#7ab648" stroke-width="2" opacity="0.55"/>
+
+  <!-- Left flower 1 (top) -->
+  <g transform="translate(28, 105) rotate(-10)">
+    <ellipse cx="0" cy="-12" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.88"/>
+    <ellipse cx="9" cy="-7" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.83" transform="rotate(45)"/>
+    <ellipse cx="9" cy="7" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.88" transform="rotate(105)"/>
+    <ellipse cx="0" cy="12" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.83" transform="rotate(165)"/>
+    <ellipse cx="-9" cy="7" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.88" transform="rotate(225)"/>
+    <ellipse cx="-9" cy="-7" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.83" transform="rotate(285)"/>
+    <circle cx="0" cy="0" r="6" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="3.5" fill="#e8a030" opacity="0.7"/>
+  </g>
+
+  <!-- Left leaf 1 -->
+  <path d="M20,130 C5,120 2,108 10,103 C16,110 20,122 20,130Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M36,130 C50,120 52,108 44,103 C38,110 36,122 36,130Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Left bud 1 -->
+  <g transform="translate(24, 168) rotate(8)">
+    <path d="M0,-10 C5,-6 5,2 0,9 C-5,2 -5,-6 0,-10Z" fill="#d4607a" opacity="0.88"/>
+    <path d="M-4,-5 C0,-1 0,5 -4,9 C-7,3 -6,-3 -4,-5Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M4,-5 C7,-3 7,3 4,9 C0,5 0,-1 4,-5Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M-2,7 C-7,14 -5,19 0,21 C5,19 7,14 2,7Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+
+  <!-- Left small flower 2 -->
+  <g transform="translate(32, 215)">
+    <circle cx="-5.5" cy="0" r="5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="-5.5" r="5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="5.5" cy="0" r="5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="5.5" r="5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="-4" cy="-4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="4" cy="-4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="4" cy="4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="-4" cy="4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="0" cy="0" r="5" fill="url(#centerGrad)"/>
+  </g>
+
+  <!-- Left leaf cluster 2 -->
+  <path d="M14,248 C4,238 2,225 12,220 C16,228 16,240 14,248Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M42,242 C54,234 54,222 44,218 C40,226 40,236 42,242Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Left flower 3 (large rose) -->
+  <g transform="translate(28, 295) rotate(-5)">
+    <ellipse cx="0" cy="-13" rx="8" ry="12" fill="url(#petalGrad3)" opacity="0.9"/>
+    <ellipse cx="10" cy="-7" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(40)"/>
+    <ellipse cx="10" cy="7" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(100)"/>
+    <ellipse cx="0" cy="13" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(160)"/>
+    <ellipse cx="-10" cy="7" rx="8" ry="12" fill="url(#petalGrad3)" opacity="0.9" transform="rotate(220)"/>
+    <ellipse cx="-10" cy="-7" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(280)"/>
+    <circle cx="0" cy="0" r="7" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="4" fill="#e8a030" opacity="0.7"/>
+  </g>
+
+  <!-- Left leaf 3 -->
+  <path d="M14,324 C3,314 1,300 11,296 C15,305 15,318 14,324Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M44,318 C56,310 56,296 45,292 C41,302 41,312 44,318Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Left bud 2 -->
+  <g transform="translate(22, 358) rotate(-12)">
+    <path d="M0,-9 C4,-5 4,2 0,8 C-4,2 -4,-5 0,-9Z" fill="#d4607a" opacity="0.88"/>
+    <path d="M-3,-4 C0,-1 0,5 -3,8 C-6,2 -5,-2 -3,-4Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M3,-4 C6,-2 6,2 3,8 C0,5 0,-1 3,-4Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M-2,6 C-6,13 -4,17 0,19 C4,17 6,13 2,6Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+
+  <!-- Left flower 4 -->
+  <g transform="translate(32, 400)">
+    <circle cx="-6" cy="0" r="5.5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="-6" r="5.5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="6" cy="0" r="5.5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="6" r="5.5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="-4.5" cy="-4.5" r="4.5" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="4.5" cy="-4.5" r="4.5" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="4.5" cy="4.5" r="4.5" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="-4.5" cy="4.5" r="4.5" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="0" cy="0" r="5.5" fill="url(#centerGrad)"/>
+  </g>
+
+  <!-- Left leaf 4 -->
+  <path d="M12,432 C2,422 0,408 10,403 C14,412 14,424 12,432Z" fill="#7ab648" opacity="0.8"/>
+
+  <!-- Left flower 5 (medium) -->
+  <g transform="translate(26, 472) rotate(8)">
+    <ellipse cx="0" cy="-11" rx="7" ry="10" fill="url(#petalGrad1)" opacity="0.88"/>
+    <ellipse cx="8" cy="-6" rx="7" ry="10" fill="url(#petalGrad2)" opacity="0.83" transform="rotate(50)"/>
+    <ellipse cx="8" cy="6" rx="7" ry="10" fill="url(#petalGrad1)" opacity="0.88" transform="rotate(110)"/>
+    <ellipse cx="0" cy="11" rx="7" ry="10" fill="url(#petalGrad2)" opacity="0.83" transform="rotate(170)"/>
+    <ellipse cx="-8" cy="6" rx="7" ry="10" fill="url(#petalGrad1)" opacity="0.88" transform="rotate(230)"/>
+    <ellipse cx="-8" cy="-6" rx="7" ry="10" fill="url(#petalGrad2)" opacity="0.83" transform="rotate(290)"/>
+    <circle cx="0" cy="0" r="6" fill="url(#centerGrad)"/>
+  </g>
+
+  <!-- Left leaf 5 -->
+  <path d="M44,460 C56,450 56,437 45,432 C41,441 41,452 44,460Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Left buds & small flowers continuing down -->
+  <g transform="translate(30, 520) rotate(-5)">
+    <path d="M0,-8 C4,-4 4,2 0,7 C-4,2 -4,-4 0,-8Z" fill="#e8a0b0" opacity="0.85"/>
+    <path d="M-3,5 C-7,12 -5,16 0,18 C5,16 7,12 3,5Z" fill="#7ab648" opacity="0.8"/>
+  </g>
+  <g transform="translate(20, 555)">
+    <circle cx="-5" cy="0" r="4.5" fill="#f5c2cb" opacity="0.88"/>
+    <circle cx="0" cy="-5" r="4.5" fill="#e8a0b0" opacity="0.88"/>
+    <circle cx="5" cy="0" r="4.5" fill="#f5c2cb" opacity="0.88"/>
+    <circle cx="0" cy="5" r="4.5" fill="#e8a0b0" opacity="0.88"/>
+    <circle cx="0" cy="0" r="4" fill="#ffd700" opacity="0.9"/>
+  </g>
+  <path d="M12,578 C2,568 0,556 10,551 C14,560 14,571 12,578Z" fill="#7ab648" opacity="0.78"/>
+
+  <!-- Left flower 6 (large) -->
+  <g transform="translate(30, 615) rotate(-8)">
+    <ellipse cx="0" cy="-13" rx="8" ry="11" fill="url(#petalGrad3)" opacity="0.9"/>
+    <ellipse cx="10" cy="-7" rx="8" ry="11" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(42)"/>
+    <ellipse cx="10" cy="7" rx="8" ry="11" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(102)"/>
+    <ellipse cx="0" cy="13" rx="8" ry="11" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(162)"/>
+    <ellipse cx="-10" cy="7" rx="8" ry="11" fill="url(#petalGrad3)" opacity="0.9" transform="rotate(222)"/>
+    <ellipse cx="-10" cy="-7" rx="8" ry="11" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(282)"/>
+    <circle cx="0" cy="0" r="6.5" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="4" fill="#e8a030" opacity="0.7"/>
+  </g>
+  <path d="M14,644 C3,634 1,620 11,615 C15,624 15,636 14,644Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M46,638 C58,629 58,615 47,610 C43,620 43,630 46,638Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Left bud 3 -->
+  <g transform="translate(24, 672) rotate(10)">
+    <path d="M0,-9 C4,-5 4,2 0,8 C-4,2 -4,-5 0,-9Z" fill="#d4607a" opacity="0.88"/>
+    <path d="M-3,5 C-7,12 -5,16 0,18 C5,16 7,12 3,5Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+
+  <!-- Left small flower 7 -->
+  <g transform="translate(32, 708)">
+    <circle cx="-5" cy="0" r="4.5" fill="#e8a0b0" opacity="0.88"/>
+    <circle cx="0" cy="-5" r="4.5" fill="#f5c2cb" opacity="0.88"/>
+    <circle cx="5" cy="0" r="4.5" fill="#e8a0b0" opacity="0.88"/>
+    <circle cx="0" cy="5" r="4.5" fill="#f5c2cb" opacity="0.88"/>
+    <circle cx="0" cy="0" r="4" fill="#ffd700" opacity="0.9"/>
+  </g>
+  <path d="M44,695 C56,686 55,673 44,669 C41,678 41,688 44,695Z" fill="#7ab648" opacity="0.75"/>
+
+  <!-- ============================================================ -->
+  <!-- RIGHT VERTICAL STRIP (far right, outside sidebar)            -->
+  <!-- ============================================================ -->
+  <path d="M1162,75 C1168,160 1155,260 1165,370 C1172,460 1160,560 1166,680 C1170,740 1164,790 1160,800"
+        fill="none" stroke="#7ab648" stroke-width="2" opacity="0.55"/>
+
+  <!-- Right flower 1 -->
+  <g transform="translate(1162, 108) rotate(10)">
+    <ellipse cx="0" cy="-12" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.88"/>
+    <ellipse cx="9" cy="-7" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(45)"/>
+    <ellipse cx="9" cy="7" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(105)"/>
+    <ellipse cx="0" cy="12" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(165)"/>
+    <ellipse cx="-9" cy="7" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(225)"/>
+    <ellipse cx="-9" cy="-7" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(285)"/>
+    <circle cx="0" cy="0" r="6" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="3.5" fill="#e8a030" opacity="0.7"/>
+  </g>
+  <path d="M1176,130 C1186,120 1188,108 1178,103 C1174,110 1174,122 1176,130Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M1148,130 C1136,122 1136,108 1146,103 C1150,110 1150,122 1148,130Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Right bud 1 -->
+  <g transform="translate(1166, 168) rotate(-8)">
+    <path d="M0,-10 C5,-6 5,2 0,9 C-5,2 -5,-6 0,-10Z" fill="#d4607a" opacity="0.88"/>
+    <path d="M-4,-5 C0,-1 0,5 -4,9 C-7,3 -6,-3 -4,-5Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M4,-5 C7,-3 7,3 4,9 C0,5 0,-1 4,-5Z" fill="#e8a0b0" opacity="0.8"/>
+    <path d="M-2,7 C-7,14 -5,19 0,21 C5,19 7,14 2,7Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+
+  <!-- Right flower 2 (8-petal) -->
+  <g transform="translate(1158, 215)">
+    <circle cx="-5.5" cy="0" r="5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="-5.5" r="5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="5.5" cy="0" r="5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="5.5" r="5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="-4" cy="-4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="4" cy="-4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="4" cy="4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="-4" cy="4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="0" cy="0" r="5" fill="url(#centerGrad)"/>
+  </g>
+  <path d="M1176,248 C1186,238 1188,226 1178,221 C1174,229 1174,240 1176,248Z" fill="#7ab648" opacity="0.8"/>
+
+  <!-- Right flower 3 (large) -->
+  <g transform="translate(1162, 295) rotate(5)">
+    <ellipse cx="0" cy="-13" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9"/>
+    <ellipse cx="10" cy="-7" rx="8" ry="12" fill="url(#petalGrad3)" opacity="0.88" transform="rotate(40)"/>
+    <ellipse cx="10" cy="7" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(100)"/>
+    <ellipse cx="0" cy="13" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9" transform="rotate(160)"/>
+    <ellipse cx="-10" cy="7" rx="8" ry="12" fill="url(#petalGrad3)" opacity="0.88" transform="rotate(220)"/>
+    <ellipse cx="-10" cy="-7" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(280)"/>
+    <circle cx="0" cy="0" r="7" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="4" fill="#e8a030" opacity="0.7"/>
+  </g>
+  <path d="M1176,324 C1187,314 1189,300 1179,295 C1175,304 1175,316 1176,324Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M1148,318 C1136,310 1136,296 1147,291 C1151,301 1151,311 1148,318Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Right bud 2 -->
+  <g transform="translate(1168, 358) rotate(12)">
+    <path d="M0,-9 C4,-5 4,2 0,8 C-4,2 -4,-5 0,-9Z" fill="#d4607a" opacity="0.88"/>
+    <path d="M-3,5 C-7,12 -5,16 0,18 C5,16 7,12 3,5Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+
+  <!-- Right flower 4 -->
+  <g transform="translate(1158, 400)">
+    <circle cx="-6" cy="0" r="5.5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="-6" r="5.5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="6" cy="0" r="5.5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="6" r="5.5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="-4.5" cy="-4.5" r="4.5" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="4.5" cy="-4.5" r="4.5" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="4.5" cy="4.5" r="4.5" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="-4.5" cy="4.5" r="4.5" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="0" cy="0" r="5.5" fill="url(#centerGrad)"/>
+  </g>
+  <path d="M1148,432 C1136,422 1136,408 1147,403 C1151,412 1151,424 1148,432Z" fill="#7ab648" opacity="0.8"/>
+
+  <!-- Right flower 5 (medium) -->
+  <g transform="translate(1164, 472) rotate(-8)">
+    <ellipse cx="0" cy="-11" rx="7" ry="10" fill="url(#petalGrad2)" opacity="0.88"/>
+    <ellipse cx="8" cy="-6" rx="7" ry="10" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(50)"/>
+    <ellipse cx="8" cy="6" rx="7" ry="10" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(110)"/>
+    <ellipse cx="0" cy="11" rx="7" ry="10" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(170)"/>
+    <ellipse cx="-8" cy="6" rx="7" ry="10" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(230)"/>
+    <ellipse cx="-8" cy="-6" rx="7" ry="10" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(290)"/>
+    <circle cx="0" cy="0" r="6" fill="url(#centerGrad)"/>
+  </g>
+  <path d="M1176,460 C1186,450 1186,437 1175,432 C1171,441 1171,452 1176,460Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Right buds & small flowers -->
+  <g transform="translate(1160, 520) rotate(5)">
+    <path d="M0,-8 C4,-4 4,2 0,7 C-4,2 -4,-4 0,-8Z" fill="#e8a0b0" opacity="0.85"/>
+    <path d="M-3,5 C-7,12 -5,16 0,18 C5,16 7,12 3,5Z" fill="#7ab648" opacity="0.8"/>
+  </g>
+  <g transform="translate(1170, 555)">
+    <circle cx="-5" cy="0" r="4.5" fill="#f5c2cb" opacity="0.88"/>
+    <circle cx="0" cy="-5" r="4.5" fill="#e8a0b0" opacity="0.88"/>
+    <circle cx="5" cy="0" r="4.5" fill="#f5c2cb" opacity="0.88"/>
+    <circle cx="0" cy="5" r="4.5" fill="#e8a0b0" opacity="0.88"/>
+    <circle cx="0" cy="0" r="4" fill="#ffd700" opacity="0.9"/>
+  </g>
+  <path d="M1148,578 C1136,568 1136,556 1147,551 C1151,560 1151,571 1148,578Z" fill="#7ab648" opacity="0.78"/>
+
+  <!-- Right flower 6 (large) -->
+  <g transform="translate(1160, 615) rotate(8)">
+    <ellipse cx="0" cy="-13" rx="8" ry="11" fill="url(#petalGrad1)" opacity="0.9"/>
+    <ellipse cx="10" cy="-7" rx="8" ry="11" fill="url(#petalGrad3)" opacity="0.88" transform="rotate(42)"/>
+    <ellipse cx="10" cy="7" rx="8" ry="11" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(102)"/>
+    <ellipse cx="0" cy="13" rx="8" ry="11" fill="url(#petalGrad1)" opacity="0.9" transform="rotate(162)"/>
+    <ellipse cx="-10" cy="7" rx="8" ry="11" fill="url(#petalGrad3)" opacity="0.88" transform="rotate(222)"/>
+    <ellipse cx="-10" cy="-7" rx="8" ry="11" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(282)"/>
+    <circle cx="0" cy="0" r="6.5" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="4" fill="#e8a030" opacity="0.7"/>
+  </g>
+  <path d="M1176,644 C1187,634 1189,620 1179,615 C1175,624 1175,636 1176,644Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M1148,638 C1136,629 1136,615 1147,610 C1151,620 1151,630 1148,638Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Right bud 3 -->
+  <g transform="translate(1166, 672) rotate(-10)">
+    <path d="M0,-9 C4,-5 4,2 0,8 C-4,2 -4,-5 0,-9Z" fill="#d4607a" opacity="0.88"/>
+    <path d="M-3,5 C-7,12 -5,16 0,18 C5,16 7,12 3,5Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+  <!-- Right small flower 7 -->
+  <g transform="translate(1158, 708)">
+    <circle cx="-5" cy="0" r="4.5" fill="#e8a0b0" opacity="0.88"/>
+    <circle cx="0" cy="-5" r="4.5" fill="#f5c2cb" opacity="0.88"/>
+    <circle cx="5" cy="0" r="4.5" fill="#e8a0b0" opacity="0.88"/>
+    <circle cx="0" cy="5" r="4.5" fill="#f5c2cb" opacity="0.88"/>
+    <circle cx="0" cy="0" r="4" fill="#ffd700" opacity="0.9"/>
+  </g>
+  <path d="M1146,695 C1134,686 1135,673 1146,669 C1149,678 1149,688 1146,695Z" fill="#7ab648" opacity="0.75"/>
+
+  <!-- ============================================================ -->
+  <!-- BOTTOM HORIZONTAL STRIP                                      -->
+  <!-- ============================================================ -->
+  <!-- Horizontal vine -->
+  <path d="M55,810 C200,800 380,815 595,808 C810,801 990,816 1135,810"
+        fill="none" stroke="#7ab648" stroke-width="2" opacity="0.5"/>
+
+  <!-- Bottom flower cluster left -->
+  <g transform="translate(100, 810) rotate(5)">
+    <ellipse cx="0" cy="-12" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.88"/>
+    <ellipse cx="9" cy="-7" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.83" transform="rotate(45)"/>
+    <ellipse cx="9" cy="7" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.88" transform="rotate(105)"/>
+    <ellipse cx="0" cy="12" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.83" transform="rotate(165)"/>
+    <ellipse cx="-9" cy="7" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.88" transform="rotate(225)"/>
+    <ellipse cx="-9" cy="-7" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.83" transform="rotate(285)"/>
+    <circle cx="0" cy="0" r="6" fill="url(#centerGrad)"/>
+  </g>
+  <path d="M80,800 C70,790 72,778 82,775 C86,783 86,794 80,800Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M120,798 C130,789 130,776 120,773 C116,781 116,792 120,798Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Bottom bud left -->
+  <g transform="translate(148, 808) rotate(-10)">
+    <path d="M0,-9 C4,-5 4,2 0,8 C-4,2 -4,-5 0,-9Z" fill="#d4607a" opacity="0.88"/>
+    <path d="M-3,5 C-6,11 -4,15 0,17 C4,15 6,11 3,5Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+
+  <!-- Bottom small flowers scattered -->
+  <g transform="translate(200, 815)">
+    <circle cx="-5" cy="0" r="4.5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="-5" r="4.5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="5" cy="0" r="4.5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="5" r="4.5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="0" r="4" fill="#ffd700" opacity="0.9"/>
+  </g>
+  <path d="M185,806 C175,797 177,785 187,781 C191,790 191,800 185,806Z" fill="#7ab648" opacity="0.78"/>
+  <path d="M215,804 C225,795 224,783 214,779 C210,788 210,798 215,804Z" fill="#5a9e28" opacity="0.73"/>
+
+  <!-- Bottom large rose center-left -->
+  <g transform="translate(280, 812) rotate(8)">
+    <ellipse cx="0" cy="-13" rx="8" ry="12" fill="url(#petalGrad3)" opacity="0.9"/>
+    <ellipse cx="10" cy="-7" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.88" transform="rotate(40)"/>
+    <ellipse cx="10" cy="7" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(100)"/>
+    <ellipse cx="0" cy="13" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.88" transform="rotate(160)"/>
+    <ellipse cx="-10" cy="7" rx="8" ry="12" fill="url(#petalGrad3)" opacity="0.9" transform="rotate(220)"/>
+    <ellipse cx="-10" cy="-7" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(280)"/>
+    <circle cx="0" cy="0" r="7" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="4" fill="#e8a030" opacity="0.7"/>
+  </g>
+  <path d="M260,800 C250,790 252,778 262,774 C266,783 266,793 260,800Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M300,800 C310,790 309,778 299,774 C295,783 295,793 300,800Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Bottom middle flowers -->
+  <g transform="translate(380, 816) rotate(-5)">
+    <path d="M0,-9 C4,-5 4,2 0,8 C-4,2 -4,-5 0,-9Z" fill="#e8a0b0" opacity="0.88"/>
+    <path d="M-3,5 C-7,12 -5,16 0,18 C5,16 7,12 3,5Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+  <g transform="translate(440, 812)">
+    <circle cx="-5.5" cy="0" r="5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="-5.5" r="5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="5.5" cy="0" r="5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="5.5" r="5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="-4" cy="-4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="4" cy="-4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="4" cy="4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="-4" cy="4" r="4" fill="#fde8ee" opacity="0.85"/>
+    <circle cx="0" cy="0" r="5" fill="url(#centerGrad)"/>
+  </g>
+  <path d="M420,802 C410,793 412,780 422,776 C426,785 426,795 420,802Z" fill="#7ab648" opacity="0.8"/>
+
+  <!-- Bottom large rose center -->
+  <g transform="translate(595, 810) rotate(-6)">
+    <ellipse cx="0" cy="-13" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9"/>
+    <ellipse cx="10" cy="-7" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(40)"/>
+    <ellipse cx="10" cy="7" rx="8" ry="12" fill="url(#petalGrad3)" opacity="0.85" transform="rotate(100)"/>
+    <ellipse cx="0" cy="13" rx="8" ry="12" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(160)"/>
+    <ellipse cx="-10" cy="7" rx="8" ry="12" fill="url(#petalGrad1)" opacity="0.9" transform="rotate(220)"/>
+    <ellipse cx="-10" cy="-7" rx="8" ry="12" fill="url(#petalGrad3)" opacity="0.85" transform="rotate(280)"/>
+    <circle cx="0" cy="0" r="7" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="4" fill="#e8a030" opacity="0.7"/>
+  </g>
+  <path d="M574,800 C564,790 566,777 576,773 C580,782 580,793 574,800Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M616,800 C626,790 625,777 615,773 C611,782 611,793 616,800Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Bottom right flowers -->
+  <g transform="translate(680, 815) rotate(5)">
+    <path d="M0,-9 C4,-5 4,2 0,8 C-4,2 -4,-5 0,-9Z" fill="#d4607a" opacity="0.88"/>
+    <path d="M-3,5 C-7,12 -5,16 0,18 C5,16 7,12 3,5Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+  <g transform="translate(740, 812)">
+    <circle cx="-5" cy="0" r="4.5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="-5" r="4.5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="5" cy="0" r="4.5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="5" r="4.5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="0" r="4" fill="#ffd700" opacity="0.9"/>
+  </g>
+  <path d="M720,803 C710,793 712,781 722,777 C726,786 726,796 720,803Z" fill="#7ab648" opacity="0.78"/>
+  <path d="M758,800 C768,792 767,779 757,775 C753,784 753,794 758,800Z" fill="#5a9e28" opacity="0.73"/>
+
+  <!-- Bottom large rose right-center -->
+  <g transform="translate(840, 812) rotate(8)">
+    <ellipse cx="0" cy="-13" rx="8" ry="11" fill="url(#petalGrad3)" opacity="0.9"/>
+    <ellipse cx="10" cy="-7" rx="8" ry="11" fill="url(#petalGrad1)" opacity="0.88" transform="rotate(42)"/>
+    <ellipse cx="10" cy="7" rx="8" ry="11" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(102)"/>
+    <ellipse cx="0" cy="13" rx="8" ry="11" fill="url(#petalGrad1)" opacity="0.88" transform="rotate(162)"/>
+    <ellipse cx="-10" cy="7" rx="8" ry="11" fill="url(#petalGrad3)" opacity="0.9" transform="rotate(222)"/>
+    <ellipse cx="-10" cy="-7" rx="8" ry="11" fill="url(#petalGrad2)" opacity="0.85" transform="rotate(282)"/>
+    <circle cx="0" cy="0" r="6.5" fill="url(#centerGrad)"/>
+    <circle cx="0" cy="0" r="4" fill="#e8a030" opacity="0.7"/>
+  </g>
+  <path d="M820,802 C810,792 812,779 822,775 C826,784 826,795 820,802Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M860,800 C870,792 869,779 859,775 C855,784 855,794 860,800Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Bottom right small -->
+  <g transform="translate(930, 815) rotate(-8)">
+    <path d="M0,-9 C4,-5 4,2 0,8 C-4,2 -4,-5 0,-9Z" fill="#e8a0b0" opacity="0.88"/>
+    <path d="M-3,5 C-7,12 -5,16 0,18 C5,16 7,12 3,5Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+  <g transform="translate(990, 812)">
+    <circle cx="-5" cy="0" r="4.5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="-5" r="4.5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="5" cy="0" r="4.5" fill="#f5c2cb" opacity="0.9"/>
+    <circle cx="0" cy="5" r="4.5" fill="#e8a0b0" opacity="0.9"/>
+    <circle cx="0" cy="0" r="4" fill="#ffd700" opacity="0.9"/>
+  </g>
+  <path d="M970,803 C960,793 962,781 972,777 C976,786 976,796 970,803Z" fill="#7ab648" opacity="0.78"/>
+
+  <!-- Bottom far right cluster -->
+  <g transform="translate(1080, 810) rotate(-5)">
+    <ellipse cx="0" cy="-12" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.88"/>
+    <ellipse cx="9" cy="-7" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(45)"/>
+    <ellipse cx="9" cy="7" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(105)"/>
+    <ellipse cx="0" cy="12" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(165)"/>
+    <ellipse cx="-9" cy="7" rx="7" ry="11" fill="url(#petalGrad2)" opacity="0.88" transform="rotate(225)"/>
+    <ellipse cx="-9" cy="-7" rx="7" ry="11" fill="url(#petalGrad1)" opacity="0.85" transform="rotate(285)"/>
+    <circle cx="0" cy="0" r="6" fill="url(#centerGrad)"/>
+  </g>
+  <path d="M1060,800 C1050,790 1052,778 1062,774 C1066,783 1066,793 1060,800Z" fill="#7ab648" opacity="0.8"/>
+  <path d="M1100,798 C1110,789 1109,776 1099,772 C1095,781 1095,791 1100,798Z" fill="#5a9e28" opacity="0.75"/>
+
+  <!-- Bottom bud right -->
+  <g transform="translate(1042, 808) rotate(10)">
+    <path d="M0,-9 C4,-5 4,2 0,8 C-4,2 -4,-5 0,-9Z" fill="#d4607a" opacity="0.88"/>
+    <path d="M-3,5 C-6,11 -4,15 0,17 C4,15 6,11 3,5Z" fill="#7ab648" opacity="0.85"/>
+  </g>
+
+</svg>
+
+<!-- ===== PAGE CONTENT ===== -->
+<div class="page">
+  <!-- HEADER -->
+  <div class="header">
+    <span class="title-year">2026</span>
+    <span class="title-month">Сентябрь</span>
+  </div>
+
+  <!-- BODY -->
+  <div class="body-row">
+    <!-- LEFT DECO SPACE -->
+    <div class="left-deco"></div>
+
+    <!-- MAIN CALENDAR -->
+    <div class="calendar-area">
+      <!-- Day headers -->
+      <div class="day-headers">
+        <div class="day-header">Понедельник</div>
+        <div class="day-header">Вторник</div>
+        <div class="day-header">Среда</div>
+        <div class="day-header">Четверг</div>
+        <div class="day-header">Пятница</div>
+        <div class="day-header weekend">Суббота</div>
+        <div class="day-header weekend">Воскресенье</div>
+      </div>
+
+      <!-- Calendar grid -->
+      <!-- September 2026: starts on Tuesday (day 2 of week) -->
+      <!-- Week 1: empty Mon, Tue 1, Wed 2, Thu 3, Fri 4, Sat 5, Sun 6 -->
+      <!-- Week 2: Mon 7, Tue 8, Wed 9, Thu 10, Fri 11, Sat 12, Sun 13 -->
+      <!-- Week 3: Mon 14, Tue 15, Wed 16, Thu 17, Fri 18, Sat 19, Sun 20 -->
+      <!-- Week 4: Mon 21, Tue 22, Wed 23, Thu 24, Fri 25, Sat 26, Sun 27 -->
+      <!-- Week 5: Mon 28, Tue 29, Wed 30, empty x4 -->
+      <!-- Day of year: Sep 1 = day 244, Sep 30 = day 273; remaining = 365-day = 122 -->
+      <div class="calendar-grid">
+
+        <!-- Week 1 -->
+        <div class="day-cell empty"></div>
+        <div class="day-cell">
+          <span class="date-num">1</span>
+          <span class="doy">244<br>121</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">2</span>
+          <span class="doy">245<br>120</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">3</span>
+          <span class="doy">246<br>119</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">4</span>
+          <span class="doy">247<br>118</span>
+        </div>
+        <div class="day-cell weekend-day">
+          <span class="date-num">5</span>
+          <span class="doy">248<br>117</span>
+          <span class="moon-icon">🌗</span>
+        </div>
+        <div class="day-cell weekend-day">
+          <span class="date-num">6</span>
+          <span class="doy">249<br>116</span>
+        </div>
+
+        <!-- Week 2 -->
+        <div class="day-cell">
+          <span class="date-num">7</span>
+          <span class="doy">250<br>115</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">8</span>
+          <span class="doy">251<br>114</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">9</span>
+          <span class="doy">252<br>113</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">10</span>
+          <span class="doy">253<br>112</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">11</span>
+          <span class="doy">254<br>111</span>
+          <span class="moon-icon">🌑</span>
+        </div>
+        <div class="day-cell weekend-day">
+          <span class="date-num">12</span>
+          <span class="doy">255<br>110</span>
+        </div>
+        <div class="day-cell weekend-day">
+          <span class="date-num">13</span>
+          <span class="doy">256<br>109</span>
+        </div>
+
+        <!-- Week 3 -->
+        <div class="day-cell">
+          <span class="date-num">14</span>
+          <span class="doy">257<br>108</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">15</span>
+          <span class="doy">258<br>107</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">16</span>
+          <span class="doy">259<br>106</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">17</span>
+          <span class="doy">260<br>105</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">18</span>
+          <span class="doy">261<br>104</span>
+          <span class="moon-icon">🌓</span>
+        </div>
+        <div class="day-cell weekend-day">
+          <span class="date-num">19</span>
+          <span class="doy">262<br>103</span>
+        </div>
+        <div class="day-cell weekend-day">
+          <span class="date-num">20</span>
+          <span class="doy">263<br>102</span>
+        </div>
+
+        <!-- Week 4 -->
+        <div class="day-cell">
+          <span class="date-num">21</span>
+          <span class="doy">264<br>101</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">22</span>
+          <span class="doy">265<br>100</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">23</span>
+          <span class="doy">266<br>99</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">24</span>
+          <span class="doy">267<br>98</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">25</span>
+          <span class="doy">268<br>97</span>
+          <span class="moon-icon">🌕</span>
+        </div>
+        <div class="day-cell weekend-day">
+          <span class="date-num">26</span>
+          <span class="doy">269<br>96</span>
+        </div>
+        <div class="day-cell weekend-day">
+          <span class="date-num">27</span>
+          <span class="doy">270<br>95</span>
+        </div>
+
+        <!-- Week 5 -->
+        <div class="day-cell">
+          <span class="date-num">28</span>
+          <span class="doy">271<br>94</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">29</span>
+          <span class="doy">272<br>93</span>
+        </div>
+        <div class="day-cell">
+          <span class="date-num">30</span>
+          <span class="doy">273<br>92</span>
+        </div>
+        <div class="day-cell empty"></div>
+        <div class="day-cell empty"></div>
+        <div class="day-cell empty weekend-day" style="background:#f5f5f5;"></div>
+        <div class="day-cell empty weekend-day" style="background:#f5f5f5;"></div>
+
+      </div><!-- /calendar-grid -->
+
+      <!-- HABITS TRACKER -->
+      <div class="habits-section">
+        <!-- Header row with day numbers -->
+        <div class="habits-header-row">
+          <div class="habits-label-cell">Мои привычки</div>
+          <div class="habits-days-row">
+            <!-- 30 days, weekends: 5,6,12,13,19,20,26,27 -->
+            <div class="habit-day-cell">1</div>
+            <div class="habit-day-cell">2</div>
+            <div class="habit-day-cell">3</div>
+            <div class="habit-day-cell">4</div>
+            <div class="habit-day-cell wknd-h">5</div>
+            <div class="habit-day-cell wknd-h">6</div>
+            <div class="habit-day-cell">7</div>
+            <div class="habit-day-cell">8</div>
+            <div class="habit-day-cell">9</div>
+            <div class="habit-day-cell">10</div>
+            <div class="habit-day-cell">11</div>
+            <div class="habit-day-cell wknd-h">12</div>
+            <div class="habit-day-cell wknd-h">13</div>
+            <div class="habit-day-cell">14</div>
+            <div class="habit-day-cell">15</div>
+            <div class="habit-day-cell">16</div>
+            <div class="habit-day-cell">17</div>
+            <div class="habit-day-cell">18</div>
+            <div class="habit-day-cell wknd-h">19</div>
+            <div class="habit-day-cell wknd-h">20</div>
+            <div class="habit-day-cell">21</div>
+            <div class="habit-day-cell">22</div>
+            <div class="habit-day-cell">23</div>
+            <div class="habit-day-cell">24</div>
+            <div class="habit-day-cell">25</div>
+            <div class="habit-day-cell wknd-h">26</div>
+            <div class="habit-day-cell wknd-h">27</div>
+            <div class="habit-day-cell">28</div>
+            <div class="habit-day-cell">29</div>
+            <div class="habit-day-cell">30</div>
+          </div>
+        </div>
+        <!-- 3 empty habit rows -->
+        <div class="habit-row">
+          <div class="habit-name-cell"></div>
+          <div class="habit-cells-row">
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+          </div>
+        </div>
+        <div class="habit-row">
+          <div class="habit-name-cell"></div>
+          <div class="habit-cells-row">
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+          </div>
+        </div>
+        <div class="habit-row">
+          <div class="habit-name-cell"></div>
+          <div class="habit-cells-row">
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+            <div class="habit-cell wknd-c"></div><div class="habit-cell wknd-c"></div>
+            <div class="habit-cell"></div><div class="habit-cell"></div><div class="habit-cell"></div>
+          </div>
+        </div>
+      </div><!-- /habits-section -->
+
+      <div class="bottom-deco"></div>
+    </div><!-- /calendar-area -->
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="right-sidebar">
+      <!-- Mini calendar: August 2026 -->
+      <!-- Aug 1 = Saturday. Mon=3,Tue=4,...Sat=1,Sun=2 -->
+      <div class="mini-cal">
+        <div class="mini-cal-title">Август 2026</div>
+        <div class="mini-cal-grid">
+          <div class="mch">Пн</div><div class="mch">Вт</div><div class="mch">Ср</div>
+          <div class="mch">Чт</div><div class="mch">Пт</div>
+          <div class="mch wknd">Сб</div><div class="mch wknd">Вс</div>
+
+          <!-- Aug starts on Saturday: 5 empty Mon-Fri -->
+          <div class="mcd empty">·</div><div class="mcd empty">·</div><div class="mcd empty">·</div>
+          <div class="mcd empty">·</div><div class="mcd empty">·</div>
+          <div class="mcd wknd">1</div><div class="mcd wknd">2</div>
+
+          <div class="mcd">3</div><div class="mcd">4</div><div class="mcd">5</div>
+          <div class="mcd">6</div><div class="mcd">7</div>
+          <div class="mcd wknd">8</div><div class="mcd wknd">9</div>
+
+          <div class="mcd">10</div><div class="mcd">11</div><div class="mcd">12</div>
+          <div class="mcd">13</div><div class="mcd">14</div>
+          <div class="mcd wknd">15</div><div class="mcd wknd">16</div>
+
+          <div class="mcd">17</div><div class="mcd">18</div><div class="mcd">19</div>
+          <div class="mcd">20</div><div class="mcd">21</div>
+          <div class="mcd wknd">22</div><div class="mcd wknd">23</div>
+
+          <div class="mcd">24</div><div class="mcd">25</div><div class="mcd">26</div>
+          <div class="mcd">27</div><div class="mcd">28</div>
+          <div class="mcd wknd">29</div><div class="mcd wknd">30</div>
+
+          <div class="mcd">31</div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="notes-section">
+        <div class="notes-title">Заметки:</div>
+        <div class="notes-lines">
+          <div class="notes-line"></div><div class="notes-line"></div>
+          <div class="notes-line"></div><div class="notes-line"></div>
+          <div class="notes-line"></div><div class="notes-line"></div>
+          <div class="notes-line"></div><div class="notes-line"></div>
+          <div class="notes-line"></div><div class="notes-line"></div>
+          <div class="notes-line"></div><div class="notes-line"></div>
+          <div class="notes-line"></div><div class="notes-line"></div>
+          <div class="notes-line"></div><div class="notes-line"></div>
+          <div class="notes-line"></div><div class="notes-line"></div>
+          <div class="notes-line"></div><div class="notes-line"></div>
+          <div class="notes-line"></div><div class="notes-line"></div>
+        </div>
+      </div>
+
+      <!-- Mini calendar: October 2026 -->
+      <!-- Oct 1 = Thursday. -->
+      <div class="mini-cal">
+        <div class="mini-cal-title">Октябрь 2026</div>
+        <div class="mini-cal-grid">
+          <div class="mch">Пн</div><div class="mch">Вт</div><div class="mch">Ср</div>
+          <div class="mch">Чт</div><div class="mch">Пт</div>
+          <div class="mch wknd">Сб</div><div class="mch wknd">Вс</div>
+
+          <!-- Oct starts Thursday: 3 empty Mon-Wed -->
+          <div class="mcd empty">·</div><div class="mcd empty">·</div><div class="mcd empty">·</div>
+          <div class="mcd">1</div><div class="mcd">2</div>
+          <div class="mcd wknd">3</div><div class="mcd wknd">4</div>
+
+          <div class="mcd">5</div><div class="mcd">6</div><div class="mcd">7</div>
+          <div class="mcd">8</div><div class="mcd">9</div>
+          <div class="mcd wknd">10</div><div class="mcd wknd">11</div>
+
+          <div class="mcd">12</div><div class="mcd">13</div><div class="mcd">14</div>
+          <div class="mcd">15</div><div class="mcd">16</div>
+          <div class="mcd wknd">17</div><div class="mcd wknd">18</div>
+
+          <div class="mcd">19</div><div class="mcd">20</div><div class="mcd">21</div>
+          <div class="mcd">22</div><div class="mcd">23</div>
+          <div class="mcd wknd">24</div><div class="mcd wknd">25</div>
+
+          <div class="mcd">26</div><div class="mcd">27</div><div class="mcd">28</div>
+          <div class="mcd">29</div><div class="mcd">30</div>
+          <div class="mcd wknd">31</div>
+        </div>
+      </div>
+    </div><!-- /right-sidebar -->
+  </div><!-- /body-row -->
+</div><!-- /page -->
+
+</body>
+</html>
