@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Праздник сегодня — Келинс Календари</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #e8e8e8;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    .phone-frame {
+      width: 375px;
+      min-height: 100vh;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── 1. TOP BAR ── */
+    .top-bar {
+      background: #d6d6d6;
+      padding: 5px 12px;
+      font-size: 11px;
+      color: #555;
+      font-weight: 400;
+      letter-spacing: 0.1px;
+    }
+
+    /* ── 2. HEADER ── */
+    .header {
+      background: #ffffff;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .logo-icon {
+      width: 26px;
+      height: 26px;
+      background: #c0392b;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-icon svg {
+      width: 15px;
+      height: 15px;
+      fill: #ffffff;
+    }
+
+    .logo-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: 0.4px;
+      line-height: 1.25;
+    }
+
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge {
+      height: 26px;
+      padding: 0 9px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.3px;
+      text-transform: lowercase;
+    }
+
+    .badge-wb {
+      background: #7b2ff7;
+    }
+
+    .badge-ozon {
+      background: linear-gradient(135deg, #005bff 0%, #ff6a00 100%);
+    }
+
+    /* ── 3. TAB BAR ── */
+    .tab-bar {
+      background: #ffffff;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    .tab-group {
+      display: flex;
+      align-items: center;
+      background: #f0f0f0;
+      border-radius: 22px;
+      padding: 3px;
+      gap: 2px;
+      flex: 1;
+    }
+
+    .tab {
+      height: 32px;
+      padding: 0 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .tab.active {
+      background: #2d2d2d;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .tab.inactive {
+      background: transparent;
+      color: #666666;
+    }
+
+    .tab-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-icon-btn {
+      width: 34px;
+      height: 34px;
+      border: 1px solid #cccccc;
+      border-radius: 7px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .tab-icon-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: #444;
+      fill: none;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── 4. DATE ROW ── */
+    .date-row {
+      background: #ffffff;
+      padding: 14px 16px 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    .date-left {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .date-number {
+      font-size: 52px;
+      font-weight: 800;
+      color: #111111;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+
+    .date-month-year {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .date-month {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111111;
+      line-height: 1.2;
+    }
+
+    .date-year {
+      font-size: 13px;
+      font-weight: 400;
+      color: #888888;
+      line-height: 1.2;
+    }
+
+    .date-weekday {
+      font-size: 15px;
+      font-weight: 500;
+      color: #333333;
+      text-align: right;
+    }
+
+    /* ── 5. HOLIDAY LIST ── */
+    .holiday-list {
+      background: #ffffff;
+    }
+
+    .holiday-item {
+      padding: 13px 16px;
+      border-bottom: 1px solid #eeeeee;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .holiday-item:active {
+      background: #fafafa;
+    }
+
+    .holiday-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .holiday-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .holiday-arrow {
+      font-size: 15px;
+      color: #555555;
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-weight: 400;
+    }
+
+    .holiday-subtitle {
+      font-size: 11.5px;
+      font-weight: 400;
+      color: #999999;
+      line-height: 1.35;
+    }
+
+    /* ── 6. РАЗВЕРНУТЬ ROW ── */
+    .expand-row {
+      background: #ffffff;
+      padding: 14px 16px;
+      border-bottom: 1px solid #eeeeee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .expand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .expand-dot {
+      width: 10px;
+      height: 10px;
+      background: #2196F3;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .expand-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .expand-chevron {
+      font-size: 16px;
+      color: #555555;
+      line-height: 1;
+    }
+
+    /* ── 7. FOLK CALENDAR CARD ── */
+    .folk-section {
+      background: #ffffff;
+      padding: 14px 14px 16px 14px;
+    }
+
+    .folk-card {
+      background: #f5f5f5;
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .folk-pill {
+      display: inline-block;
+      background: #e4e4e4;
+      color: #666666;
+      font-size: 10.5px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 9px;
+      letter-spacing: 0.1px;
+    }
+
+    .folk-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111111;
+      margin-bottom: 7px;
+      line-height: 1.3;
+    }
+
+    .folk-body {
+      font-size: 13px;
+      font-weight: 400;
+      color: #555555;
+      line-height: 1.55;
+    }
+
+    /* ── 8. FOOTER ── */
+    .footer {
+      background: #ffffff;
+      padding: 18px 16px 28px 16px;
+      border-top: 1px solid #eeeeee;
+      margin-top: auto;
+    }
+
+    .footer-copyright {
+      font-size: 12px;
+      color: #999999;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: #999999;
+      text-decoration: none;
+      line-height: 1.4;
+    }
+
+    .footer-links a:hover {
+      color: #555555;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+
+    <!-- 1. TOP BAR -->
+    <div class="top-bar">375. Праздник сегодня</div>
+
+    <!-- 2. HEADER -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <!-- Book icon SVG -->
+          <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 3h6a2 2 0 0 1 2 2v11a2 2 0 0 0-2-2H3V3z"/>
+            <path d="M17 3h-6a2 2 0 0 0-2 2v11a2 2 0 0 1 2-2h6V3z"/>
+          </svg>
+        </div>
+        <span class="logo-text">КЕЛИНС КАЛЕНДАРИ</span>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-wb">wb</span>
+        <span class="badge badge-ozon">ozon</span>
+      </div>
+    </header>
+
+    <!-- 3. TAB BAR -->
+    <nav class="tab-bar">
+      <div class="tab-group">
+        <div class="tab active">Сегодня</div>
+        <div class="tab inactive">Завтра</div>
+      </div>
+      <div class="tab-icons">
+        <!-- Calendar icon -->
+        <button class="tab-icon-btn" aria-label="Календарь">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+          </svg>
+        </button>
+        <!-- Search icon -->
+        <button class="tab-icon-btn" aria-label="Поиск">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10.5" cy="10.5" r="6.5"/>
+            <line x1="15.5" y1="15.5" x2="21" y2="21"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- 4. DATE ROW -->
+    <div class="date-row">
+      <div class="date-left">
+        <span class="date-number">24</span>
+        <div class="date-month-year">
+          <span class="date-month">апреля</span>
+          <span class="date-year">2026</span>
+        </div>
+      </div>
+      <div class="date-weekday">пятница</div>
+    </div>
+
+    <!-- 5. HOLIDAY LIST -->
+    <section class="holiday-list">
+
+      <div class="holiday-item">
+        <div class="holiday-title-row">
+          <span class="holiday-title">День местного самоуправления в России</span>
+          <span class="holiday-arrow">→</span>
+        </div>
+        <span class="holiday-subtitle">Государственный / религиозный</span>
+      </div>
+
+      <div class="holiday-item">
+        <div class="holiday-title-row">
+          <span class="holiday-title">День мастера пряничного дела в России</span>
+          <span class="holiday-arrow">→</span>
+        </div>
+        <span class="holiday-subtitle">Государственный / религиозный / международный / военный</span>
+      </div>
+
+      <div class="holiday-item">
+        <div class="holiday-title-row">
+          <span class="holiday-title">Всемирный день творчества и инновационной деятельности</span>
+          <span class="holiday-arrow">→</span>
+        </div>
+        <span class="holiday-subtitle">Государственный / религиозный / международный</span>
+      </div>
+
+      <div class="holiday-item">
+        <div class="holiday-title-row">
+          <span class="holiday-title">День местного самоуправления в России</span>
+          <span class="holiday-arrow">→</span>
+        </div>
+        <span class="holiday-subtitle">Государственный / религиозный</span>
+      </div>
+
+      <div class="holiday-item">
+        <div class="holiday-title-row">
+          <span class="holiday-title">Всемирный день мигрирующих птиц</span>
+          <span class="holiday-arrow">→</span>
+        </div>
+        <span class="holiday-subtitle">Государственный / религиозный / международный / военный</span>
+      </div>
+
+    </section>
+
+    <!-- 6. РАЗВЕРНУТЬ ROW -->
+    <div class="expand-row">
+      <div class="expand-left">
+        <div class="expand-dot"></div>
+        <span class="expand-label">Развернуть</span>
+      </div>
+      <span class="expand-chevron">&#8964;</span>
+    </div>
+
+    <!-- 7. FOLK CALENDAR CARD -->
+    <div class="folk-section">
+      <div class="folk-card">
+        <span class="folk-pill">Народный календарь</span>
+        <div class="folk-title">Акулин день</div>
+        <div class="folk-body">
+          В этот день вспоминают святых, которые во время своей жизни показывали чудеса доброты и спосо&hellip;
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. FOOTER -->
+    <footer class="footer">
+      <p class="footer-copyright">© Торгово-издательская компания «КЕЛИНС»</p>
+      <div class="footer-links">
+        <a href="#">Политика конфиденциальности</a>
+        <a href="#">Пользовательское соглашение</a>
+        <a href="#">Сайт создан в Космос-Веб</a>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>
