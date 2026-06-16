@@ -362,6 +362,140 @@
       line-height: 1.55;
     }
 
+    /* ── SCREENS ── */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+    }
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    /* active state for icon buttons */
+    .tab-icon-btn.active {
+      background: #2d2d2d;
+      border-color: #2d2d2d;
+    }
+    .tab-icon-btn.active svg {
+      stroke: #ffffff;
+    }
+
+    /* ── ЗАВТРА screen ── */
+    .tomorrow-date-row {
+      background: #ffffff;
+      padding: 14px 16px 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    /* ── CALENDAR screen ── */
+    .calendar-screen-body {
+      padding: 16px;
+      background: #ffffff;
+      flex: 1;
+    }
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .cal-nav-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111;
+    }
+    .cal-nav-btn {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 15px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cal-grid {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .cal-grid th {
+      font-size: 11px;
+      font-weight: 600;
+      color: #999;
+      text-align: center;
+      padding: 4px 0 8px;
+      text-transform: uppercase;
+    }
+    .cal-grid th.weekend { color: #e53935; }
+    .cal-grid td {
+      text-align: center;
+      padding: 6px 2px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+    .cal-grid td:hover { background: #f0f0f0; }
+    .cal-grid td.today {
+      background: #2d2d2d;
+      color: #fff;
+      border-radius: 50%;
+      font-weight: 700;
+    }
+    .cal-grid td.weekend-day { color: #e53935; }
+    .cal-grid td.other-month { color: #ccc; }
+
+    /* ── SEARCH screen ── */
+    .search-screen-body {
+      padding: 16px;
+      background: #ffffff;
+      flex: 1;
+    }
+    .search-input-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .search-input {
+      width: 100%;
+      height: 42px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 0 14px 0 38px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      color: #111;
+    }
+    .search-input:focus { border-color: #aaa; }
+    .search-input-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: #aaa;
+      fill: none;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+    }
+    .search-hint {
+      font-size: 13px;
+      color: #aaa;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .search-results { display: none; }
+
     /* ── 8. FOOTER ── */
     .footer {
       background: #ffffff;
@@ -422,12 +556,11 @@
     <!-- 3. TAB BAR -->
     <nav class="tab-bar">
       <div class="tab-group">
-        <div class="tab active">Сегодня</div>
-        <div class="tab inactive">Завтра</div>
+        <div class="tab active" data-screen="today" onclick="switchScreen('today')">Сегодня</div>
+        <div class="tab inactive" data-screen="tomorrow" onclick="switchScreen('tomorrow')">Завтра</div>
       </div>
       <div class="tab-icons">
-        <!-- Calendar icon -->
-        <button class="tab-icon-btn" aria-label="Календарь">
+        <button class="tab-icon-btn" id="btn-calendar" aria-label="Календарь" onclick="switchScreen('calendar')">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <rect x="3" y="4" width="18" height="18" rx="2"/>
             <line x1="3" y1="9" x2="21" y2="9"/>
@@ -435,8 +568,7 @@
             <line x1="16" y1="2" x2="16" y2="6"/>
           </svg>
         </button>
-        <!-- Search icon -->
-        <button class="tab-icon-btn" aria-label="Поиск">
+        <button class="tab-icon-btn" id="btn-search" aria-label="Поиск" onclick="switchScreen('search')">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <circle cx="10.5" cy="10.5" r="6.5"/>
             <line x1="15.5" y1="15.5" x2="21" y2="21"/>
@@ -445,79 +577,150 @@
       </div>
     </nav>
 
-    <!-- 4. DATE ROW -->
-    <div class="date-row">
-      <div class="date-left">
-        <span class="date-number">24</span>
-        <div class="date-month-year">
-          <span class="date-month">апреля</span>
-          <span class="date-year">2026</span>
+    <!-- SCREEN: СЕГОДНЯ -->
+    <div class="screen active" id="screen-today">
+      <!-- 4. DATE ROW -->
+      <div class="date-row">
+        <div class="date-left">
+          <span class="date-number">24</span>
+          <div class="date-month-year">
+            <span class="date-month">апреля</span>
+            <span class="date-year">2026</span>
+          </div>
+        </div>
+        <div class="date-weekday">пятница</div>
+      </div>
+      <!-- 5. HOLIDAY LIST -->
+      <section class="holiday-list">
+        <div class="holiday-item">
+          <div class="holiday-title-row">
+            <span class="holiday-title">День местного самоуправления в России</span>
+            <span class="holiday-arrow">→</span>
+          </div>
+          <span class="holiday-subtitle">Государственный / религиозный</span>
+        </div>
+        <div class="holiday-item">
+          <div class="holiday-title-row">
+            <span class="holiday-title">День мастера пряничного дела в России</span>
+            <span class="holiday-arrow">→</span>
+          </div>
+          <span class="holiday-subtitle">Государственный / религиозный / международный / военный</span>
+        </div>
+        <div class="holiday-item">
+          <div class="holiday-title-row">
+            <span class="holiday-title">Всемирный день творчества и инновационной деятельности</span>
+            <span class="holiday-arrow">→</span>
+          </div>
+          <span class="holiday-subtitle">Государственный / религиозный / международный</span>
+        </div>
+        <div class="holiday-item">
+          <div class="holiday-title-row">
+            <span class="holiday-title">День местного самоуправления в России</span>
+            <span class="holiday-arrow">→</span>
+          </div>
+          <span class="holiday-subtitle">Государственный / религиозный</span>
+        </div>
+        <div class="holiday-item">
+          <div class="holiday-title-row">
+            <span class="holiday-title">Всемирный день мигрирующих птиц</span>
+            <span class="holiday-arrow">→</span>
+          </div>
+          <span class="holiday-subtitle">Государственный / религиозный / международный / военный</span>
+        </div>
+      </section>
+      <!-- 6. РАЗВЕРНУТЬ ROW -->
+      <div class="expand-row">
+        <div class="expand-left">
+          <div class="expand-dot"></div>
+          <span class="expand-label">Развернуть</span>
+        </div>
+        <span class="expand-chevron">&#8964;</span>
+      </div>
+      <!-- 7. FOLK CALENDAR CARD -->
+      <div class="folk-section">
+        <div class="folk-card">
+          <span class="folk-pill">Народный календарь</span>
+          <div class="folk-title">Акулин день</div>
+          <div class="folk-body">В этот день вспоминают святых, которые во время своей жизни показывали чудеса доброты и спосо&hellip;</div>
         </div>
       </div>
-      <div class="date-weekday">пятница</div>
     </div>
 
-    <!-- 5. HOLIDAY LIST -->
-    <section class="holiday-list">
-
-      <div class="holiday-item">
-        <div class="holiday-title-row">
-          <span class="holiday-title">День местного самоуправления в России</span>
-          <span class="holiday-arrow">→</span>
+    <!-- SCREEN: ЗАВТРА -->
+    <div class="screen" id="screen-tomorrow">
+      <div class="date-row">
+        <div class="date-left">
+          <span class="date-number">25</span>
+          <div class="date-month-year">
+            <span class="date-month">апреля</span>
+            <span class="date-year">2026</span>
+          </div>
         </div>
-        <span class="holiday-subtitle">Государственный / религиозный</span>
+        <div class="date-weekday">суббота</div>
       </div>
-
-      <div class="holiday-item">
-        <div class="holiday-title-row">
-          <span class="holiday-title">День мастера пряничного дела в России</span>
-          <span class="holiday-arrow">→</span>
+      <section class="holiday-list">
+        <div class="holiday-item">
+          <div class="holiday-title-row">
+            <span class="holiday-title">День дочери</span>
+            <span class="holiday-arrow">→</span>
+          </div>
+          <span class="holiday-subtitle">Международный</span>
         </div>
-        <span class="holiday-subtitle">Государственный / религиозный / международный / военный</span>
-      </div>
-
-      <div class="holiday-item">
-        <div class="holiday-title-row">
-          <span class="holiday-title">Всемирный день творчества и инновационной деятельности</span>
-          <span class="holiday-arrow">→</span>
+        <div class="holiday-item">
+          <div class="holiday-title-row">
+            <span class="holiday-title">День освобождения Португалии</span>
+            <span class="holiday-arrow">→</span>
+          </div>
+          <span class="holiday-subtitle">Государственный / международный</span>
         </div>
-        <span class="holiday-subtitle">Государственный / религиозный / международный</span>
-      </div>
-
-      <div class="holiday-item">
-        <div class="holiday-title-row">
-          <span class="holiday-title">День местного самоуправления в России</span>
-          <span class="holiday-arrow">→</span>
+        <div class="holiday-item">
+          <div class="holiday-title-row">
+            <span class="holiday-title">Всемирный день пингвинов</span>
+            <span class="holiday-arrow">→</span>
+          </div>
+          <span class="holiday-subtitle">Международный / экологический</span>
         </div>
-        <span class="holiday-subtitle">Государственный / религиозный</span>
-      </div>
-
-      <div class="holiday-item">
-        <div class="holiday-title-row">
-          <span class="holiday-title">Всемирный день мигрирующих птиц</span>
-          <span class="holiday-arrow">→</span>
+      </section>
+      <div class="folk-section">
+        <div class="folk-card">
+          <span class="folk-pill">Народный календарь</span>
+          <div class="folk-title">Василий Парийский</div>
+          <div class="folk-body">На Василия земля «парит» — прогревается после зимы. Говорили: «Василий землю пар&hellip;</div>
         </div>
-        <span class="holiday-subtitle">Государственный / религиозный / международный / военный</span>
       </div>
-
-    </section>
-
-    <!-- 6. РАЗВЕРНУТЬ ROW -->
-    <div class="expand-row">
-      <div class="expand-left">
-        <div class="expand-dot"></div>
-        <span class="expand-label">Развернуть</span>
-      </div>
-      <span class="expand-chevron">&#8964;</span>
     </div>
 
-    <!-- 7. FOLK CALENDAR CARD -->
-    <div class="folk-section">
-      <div class="folk-card">
-        <span class="folk-pill">Народный календарь</span>
-        <div class="folk-title">Акулин день</div>
-        <div class="folk-body">
-          В этот день вспоминают святых, которые во время своей жизни показывали чудеса доброты и спосо&hellip;
+    <!-- SCREEN: КАЛЕНДАРЬ -->
+    <div class="screen" id="screen-calendar">
+      <div class="calendar-screen-body">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="changeMonth(-1)">&#8249;</button>
+          <span class="cal-nav-title" id="cal-month-title">Апрель 2026</span>
+          <button class="cal-nav-btn" onclick="changeMonth(1)">&#8250;</button>
+        </div>
+        <table class="cal-grid" id="cal-table">
+          <thead>
+            <tr>
+              <th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th>
+              <th class="weekend">Сб</th><th class="weekend">Вс</th>
+            </tr>
+          </thead>
+          <tbody id="cal-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SCREEN: ПОИСК -->
+    <div class="screen" id="screen-search">
+      <div class="search-screen-body">
+        <div class="search-input-wrap">
+          <svg class="search-input-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
+            <circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/>
+          </svg>
+          <input class="search-input" type="search" placeholder="Поиск праздников..." oninput="doSearch(this.value)" />
+        </div>
+        <div id="search-results">
+          <p class="search-hint">Введите название праздника</p>
         </div>
       </div>
     </div>
@@ -533,5 +736,99 @@
     </footer>
 
   </div>
+  <script>
+    // ── Tab switching ──
+    function switchScreen(name) {
+      // Screens
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + name).classList.add('active');
+
+      // Tabs text
+      document.querySelectorAll('.tab').forEach(t => {
+        const active = t.dataset.screen === name;
+        t.classList.toggle('active', active);
+        t.classList.toggle('inactive', !active);
+      });
+
+      // Icon buttons
+      document.getElementById('btn-calendar').classList.toggle('active', name === 'calendar');
+      document.getElementById('btn-search').classList.toggle('active', name === 'search');
+
+      if (name === 'calendar') renderCalendar();
+      if (name === 'search') document.querySelector('.search-input').focus();
+    }
+
+    // ── Calendar rendering ──
+    let calYear = 2026, calMonth = 3; // April = index 3
+    const MONTHS_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                       'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+    function changeMonth(delta) {
+      calMonth += delta;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      if (calMonth < 0)  { calMonth = 11; calYear--; }
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      document.getElementById('cal-month-title').textContent = MONTHS_RU[calMonth] + ' ' + calYear;
+      const today = new Date();
+      const firstDay = new Date(calYear, calMonth, 1);
+      const lastDay  = new Date(calYear, calMonth + 1, 0);
+      // Monday-based: 0=Mon..6=Sun
+      let startDow = (firstDay.getDay() + 6) % 7;
+      const body = document.getElementById('cal-body');
+      body.innerHTML = '';
+      let day = 1 - startDow;
+      for (let row = 0; row < 6; row++) {
+        const tr = document.createElement('tr');
+        for (let col = 0; col < 7; col++, day++) {
+          const td = document.createElement('td');
+          const d = new Date(calYear, calMonth, day);
+          td.textContent = d.getDate();
+          if (d.getMonth() !== calMonth) td.classList.add('other-month');
+          if (col >= 5) td.classList.add('weekend-day');
+          if (d.getFullYear() === today.getFullYear() &&
+              d.getMonth() === today.getMonth() &&
+              d.getDate() === today.getDate()) td.classList.add('today');
+          tr.appendChild(td);
+        }
+        body.appendChild(tr);
+        if (day > lastDay.getDate() + (6 - (lastDay.getDay() + 6) % 7)) break;
+      }
+    }
+
+    // ── Search ──
+    const ALL_HOLIDAYS = [
+      { title: 'День местного самоуправления в России', cat: 'Государственный / религиозный' },
+      { title: 'День мастера пряничного дела в России', cat: 'Государственный / религиозный / международный / военный' },
+      { title: 'Всемирный день творчества и инновационной деятельности', cat: 'Государственный / религиозный / международный' },
+      { title: 'Всемирный день мигрирующих птиц', cat: 'Государственный / религиозный / международный / военный' },
+      { title: 'День дочери', cat: 'Международный' },
+      { title: 'День освобождения Португалии', cat: 'Государственный / международный' },
+      { title: 'Всемирный день пингвинов', cat: 'Международный / экологический' },
+    ];
+
+    function doSearch(q) {
+      const box = document.getElementById('search-results');
+      if (!q.trim()) {
+        box.innerHTML = '<p class="search-hint">Введите название праздника</p>';
+        return;
+      }
+      const results = ALL_HOLIDAYS.filter(h => h.title.toLowerCase().includes(q.toLowerCase()));
+      if (!results.length) {
+        box.innerHTML = '<p class="search-hint">Ничего не найдено</p>';
+        return;
+      }
+      box.innerHTML = results.map(h => `
+        <div class="holiday-item">
+          <div class="holiday-title-row">
+            <span class="holiday-title">${h.title}</span>
+            <span class="holiday-arrow">→</span>
+          </div>
+          <span class="holiday-subtitle">${h.cat}</span>
+        </div>`).join('');
+    }
+  </script>
 </body>
 </html>
